@@ -9,31 +9,46 @@ public class Main {
         Renderer r = new Renderer();
         r.addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
-                    System.exit(0);
             }
 
             public void keyPressed(KeyEvent e) {
-
+                switch (e.getKeyChar()) {
+                    case 'w':
+                        r.camera.add(0, .2, 0);
+                        break;
+                    case 'a':
+                        r.camera.add(-.2, 0, 0);
+                        break;
+                    case 's':
+                        r.camera.add(0, -.2, 0);
+                        break;
+                    case 'd':
+                        r.camera.add(.2, 0, 0);
+                        break;
+                }
             }
 
             public void keyReleased(KeyEvent e) {
 
             }
         });
-        Point3D[] p = { new Point3D(0, 0, 0), new Point3D(0, 0, 100), new Point3D(100, 0, 100),
-                new Point3D(100, 0, 0),
-                new Point3D(0, 100, 0), new Point3D(0, 100, 100), new Point3D(100, 100, 100),
-                new Point3D(100, 100, 0) };
-        for (Point3D pi : p)
-            pi.add(new Point3D(200, 200, 200));
-        Frame f = new Frame(p[0], p[1], p[2], p[3], p[0], p[4], p[5], p[6], p[7], p[4], p[7], p[3], p[2], p[6],
-                p[5], p[1]);
+
+        Frame f = new Frame(ShapeLoader.getCube(2, 2, 2));
+
+        // for (Triangle pi : f.tris) {
+        // pi.mul(300);
+        // }
+
+        for (Triangle pi : f.tris)
+            pi.translate(new Point3D(-1, -1, 10));
+
         ActionListener game = e -> {
-            for (Point3D pi : p)
-                pi.rotateZ(new Point3D(250, 250, 250), 0.010);
-            for (Point3D pi : p)
-                pi.rotateX(new Point3D(250, 250, 250), 0.020);
+            for (Triangle pi : f.tris) {
+                pi.rotateY(new Point3D(0, 0, 11), 0.010);
+                pi.rotateX(new Point3D(0, 0, 11), 0.050);
+            }
+            // for (Triangle pi : f.tris)
+            // pi.rotateX(new Point3D(150, 150, 150), 0.020);
             r.render(f);
         };
         new Timer(14, game).start();

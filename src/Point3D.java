@@ -103,11 +103,11 @@ public class Point3D {
     }
 
     public void rotateY(Point3D p, double angle) {
+        z -= p.z;
         x -= p.x;
-        y -= p.y;
-        double temp = x;
-        x = (Math.cos(angle) * x - Math.sin(angle) * y + p.x);
-        y = (Math.sin(angle) * temp + Math.cos(angle) * y + p.y);
+        double temp = z;
+        z = (Math.cos(angle) * z - Math.sin(angle) * x + p.z);
+        x = (Math.sin(angle) * temp + Math.cos(angle) * x + p.x);
     }
 
     public static double sin(double a) {

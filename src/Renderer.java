@@ -34,6 +34,7 @@ public class Renderer extends JFrame {
             }
 
         });
+        camera = new Point3D(getWidth() / 2, getHeight() / 2, 0);
         aspectRatio = (double) getWidth() / (double) getHeight();
     }
 
@@ -47,20 +48,62 @@ public class Renderer extends JFrame {
 
     public void render(Frame f) {
 
-        var g = getBufferStrategy().getDrawGraphics();
-        g.clearRect(0, 0, getWidth(), getHeight());
+        var g = (Graphics2D) getBufferStrategy().getDrawGraphics();
+        g.setColor(Color.black);
+        g.fillRect(0, 0, getWidth(), getHeight());
 
         // Ortheographic projection
 
-        g.setColor(Color.black);
+        g.setColor(Color.white);
+        g.setStroke(new BasicStroke(3));
+        var tris = f.getTris();
+        for (int i = 0; i < tris.length; i++) {
+            g.setColor(Color.white);
+            if (i == 6) {
+                g.setColor(Color.RED);
 
-        for (Line3D l : f.getLines()) {
+            }
+            var t = tris[i];
+            Point2D p1 = new Point2D((aspectRatio * F * t.points[0].getX()) / t.points[0].getZ(),
+                    (F * t.points[0].getY()) / t.points[0].getZ());
+            Point2D p2 = new Point2D((aspectRatio * F * t.points[1].getX()) / t.points[1].getZ(),
+                    (F * t.points[1].getY()) / t.points[1].getZ());
+            Point2D p3 = new Point2D((aspectRatio * F * t.points[2].getX()) / t.points[2].getZ(),
+                    (F * t.points[2].getY()) / t.points[2].getZ());
+            Point2D[] col = { p1, p2, p3 };
+            // p1.add(100, 100);
+            // p2.add(100, 100);
+            // p3.add(100, 100);
+            for (Point2D p : col)
+                p.mul(getWidth() / 2);
 
-            Point2D p1 = new Point2D((aspectRatio * F * l.p1.getX()) / l.p1.getZ(), (F * l.p1.getY()) / l.p1.getZ());
-            Point2D p2 = new Point2D((aspectRatio * F * l.p2.getX()) / l.p2.getZ(), (F * l.p2.getY()) / l.p2.getZ());
-            p1.mul(500);
-            p2.mul(500);
-            g.drawLine(p1.getIntX(), p1.getIntY(), p2.getIntX(), p2.getIntY());
+            for (Point2D p : col)
+                p.add(camera.getX(), camera.getY());
+
+            var normal = t.cross();
+            // if (normal.getX() * (t.points[0].getX() - camera.getX()) +
+            // normal.getY() * (t.points[0].getY() - camera.getY()) +
+            // normal.getZ() * (t.points[0].getZ() - camera.getZ()) < 0.0) {
+            Point3D rel = new Point3D((t.points[0].getX()),
+                    (t.points[0].getY()),
+                    (t.points[0].getZ()));
+
+            if (i == 4) {
+                console.log("norm: " + normal);
+                console.log("rel: " + rel);
+                console.log("dot: " + -(normal.getX() * rel.getX() + normal.getY() * rel.getY() + normal.getZ() *
+                        rel.getZ()));
+                g.setColor(Color.red);
+            }
+
+            if (normal.getX() * rel.getX() + normal.getY() * rel.getY() + normal.getZ() *
+                    rel.getZ() < 0.0) {
+
+                g.drawLine(p1.getIntX(), p1.getIntY(), p2.getIntX(), p2.getIntY());
+                g.drawLine(p2.getIntX(), p2.getIntY(), p3.getIntX(), p3.getIntY());
+                g.drawLine(p3.getIntX(), p3.getIntY(), p1.getIntX(), p1.getIntY());
+
+            }
         }
 
         g.dispose();

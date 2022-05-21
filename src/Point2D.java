@@ -1,5 +1,7 @@
 package Wireframe.src;
 
+import java.util.Arrays;
+
 public class Point2D {
     private double x, y;
 
@@ -56,7 +58,6 @@ public class Point2D {
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
         return "[" + x + "," + y + "]";
     }
 
