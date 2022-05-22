@@ -21,6 +21,12 @@ public class Point3D {
         this.z = p.z;
     }
 
+    public Point3D(Point2D p) {
+        this.x = p.getX();
+        this.y = p.getX();
+        this.z = 0;
+    }
+
     public void set(Point3D p) {
         this.x = p.x;
         this.y = p.y;
@@ -116,5 +122,14 @@ public class Point3D {
 
     public static double cos(double a) {
         return Math.cos(a);
+    }
+
+    public double length() {
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public double dot(Point3D p) {
+        return x * p.getX() + y * p.getY() + z *
+                p.getZ();
     }
 }

@@ -1,9 +1,18 @@
 package Wireframe.src;
 
+import java.awt.Polygon;
+import java.util.Arrays;
+
 public class Triangle {
     Point3D[] points = new Point3D[3];
 
     public Triangle(Point3D p1, Point3D p2, Point3D p3) {
+        points[0] = new Point3D(p1);
+        points[1] = new Point3D(p2);
+        points[2] = new Point3D(p3);
+    }
+
+    public Triangle(Point2D p1, Point2D p2, Point2D p3) {
         points[0] = new Point3D(p1);
         points[1] = new Point3D(p2);
         points[2] = new Point3D(p3);
@@ -42,7 +51,7 @@ public class Triangle {
                 p1.getY() * p2.getZ() - p1.getZ() * p2.getY(),
                 p1.getZ() * p2.getX() - p1.getX() * p2.getZ(),
                 p1.getX() * p2.getY() - p1.getY() * p2.getX());
-        ret.mul(1 / Math.sqrt(ret.getX() * ret.getX() + ret.getY() * ret.getY() + ret.getZ() * ret.getZ()));
+        ret.mul(1 / ret.length());
         return ret;
     }
 
@@ -59,5 +68,10 @@ public class Triangle {
         ret.append(points[1].toString() + ", ");
         ret.append(points[2].toString() + "]");
         return ret.toString();
+    }
+
+    public static Polygon toPolygon(Point2D... points) {
+        return new Polygon(Arrays.stream(points).mapToInt(a -> a.getIntX()).toArray(),
+                Arrays.stream(points).mapToInt(a -> a.getIntY()).toArray(), points.length);
     }
 }

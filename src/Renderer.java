@@ -59,10 +59,6 @@ public class Renderer extends JFrame {
         var tris = f.getTris();
         for (int i = 0; i < tris.length; i++) {
             g.setColor(Color.white);
-            if (i == 6) {
-                g.setColor(Color.RED);
-
-            }
             var t = tris[i];
             Point2D p1 = new Point2D((aspectRatio * F * t.points[0].getX()) / t.points[0].getZ(),
                     (F * t.points[0].getY()) / t.points[0].getZ());
@@ -88,20 +84,16 @@ public class Renderer extends JFrame {
                     (t.points[0].getY()),
                     (t.points[0].getZ()));
 
-            if (i == 4) {
-                console.log("norm: " + normal);
-                console.log("rel: " + rel);
-                console.log("dot: " + -(normal.getX() * rel.getX() + normal.getY() * rel.getY() + normal.getZ() *
-                        rel.getZ()));
-                g.setColor(Color.red);
-            }
+            if (normal.dot(rel) < 0.0) {
+                Point3D light = new Point3D(0, 0, -1);
+                light.mul(1 / light.length());
 
-            if (normal.getX() * rel.getX() + normal.getY() * rel.getY() + normal.getZ() *
-                    rel.getZ() < 0.0) {
-
-                g.drawLine(p1.getIntX(), p1.getIntY(), p2.getIntX(), p2.getIntY());
-                g.drawLine(p2.getIntX(), p2.getIntY(), p3.getIntX(), p3.getIntY());
-                g.drawLine(p3.getIntX(), p3.getIntY(), p1.getIntX(), p1.getIntY());
+                g.setColor(Color.getHSBColor(0, 0, (float) light.dot(normal)));
+                g.fillPolygon(Triangle.toPolygon(p1, p2, p3));
+                // g.drawPolygon(Triangle.toPolygon(p1, p2, p3));
+                // g.drawLine(p1.getIntX(), p1.getIntY(), p2.getIntX(), p2.getIntY());
+                // g.drawLine(p2.getIntX(), p2.getIntY(), p3.getIntX(), p3.getIntY());
+                // g.drawLine(p3.getIntX(), p3.getIntY(), p1.getIntX(), p1.getIntY());
 
             }
         }

@@ -44,13 +44,13 @@ public class Main {
 
         ActionListener game = e -> {
             for (Triangle pi : f.tris) {
-                pi.rotateY(new Point3D(0, 0, 11), 0.010);
-                pi.rotateX(new Point3D(0, 0, 11), 0.050);
+                pi.rotateY(new Point3D(0, 0, 11), 0.007);
+                // pi.rotateZ(new Point3D(0, 0, 11), 0.005);
             }
             // for (Triangle pi : f.tris)
             // pi.rotateX(new Point3D(150, 150, 150), 0.020);
             r.render(f);
         };
-        new Timer(14, game).start();
+        new Timer(12, game).start();
     }
 }
