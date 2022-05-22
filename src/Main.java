@@ -7,10 +7,7 @@ import javax.swing.Timer;
 public class Main {
     public static void main(String[] args) {
         Renderer r = new Renderer();
-        r.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent e) {
-            }
-
+        r.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyChar()) {
                     case 'w':
@@ -28,12 +25,10 @@ public class Main {
                 }
             }
 
-            public void keyReleased(KeyEvent e) {
-
-            }
         });
 
-        Frame f = new Frame(ShapeLoader.getCube(2, 2, 2));
+        Frame f = new Frame(
+                ShapeLoader.getShape("C:/Users/Joseph/Documents/GitHub/WireFrame/Wireframe/data/VideoShip.obj"));
 
         // for (Triangle pi : f.tris) {
         // pi.mul(300);
@@ -45,7 +40,7 @@ public class Main {
         ActionListener game = e -> {
             for (Triangle pi : f.tris) {
                 pi.rotateY(new Point3D(0, 0, 11), 0.007);
-                // pi.rotateZ(new Point3D(0, 0, 11), 0.005);
+                pi.rotateZ(new Point3D(0, 0, 11), 0.005);
             }
             // for (Triangle pi : f.tris)
             // pi.rotateX(new Point3D(150, 150, 150), 0.020);

@@ -56,7 +56,11 @@ public class Renderer extends JFrame {
 
         g.setColor(Color.white);
         g.setStroke(new BasicStroke(3));
+
+        f.sort();
+
         var tris = f.getTris();
+
         for (int i = 0; i < tris.length; i++) {
             g.setColor(Color.white);
             var t = tris[i];

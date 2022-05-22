@@ -125,7 +125,7 @@ public class Point3D {
     }
 
     public double length() {
-        return Math.sqrt(x * x + y * y + z * z);
+        return Math.sqrt(dot(this));
     }
 
     public double dot(Point3D p) {

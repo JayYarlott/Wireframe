@@ -61,6 +61,10 @@ public class Triangle {
         points[2].mul(scale);
     }
 
+    public double getZ() {
+        return (points[0].getZ() + points[1].getZ() + points[2].getZ()) / 3;
+    }
+
     @Override
     public String toString() {
         StringBuilder ret = new StringBuilder("[");
