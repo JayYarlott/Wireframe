@@ -2,6 +2,7 @@ package Wireframe.src;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.Arrays;
 import java.awt.*;
 
 public class Renderer extends JFrame {
@@ -47,7 +48,7 @@ public class Renderer extends JFrame {
     double dcpx = 0, dcpy = 0;
 
     public void render(Frame f) {
-
+        long time = System.currentTimeMillis();
         var g = (Graphics2D) getBufferStrategy().getDrawGraphics();
         g.setColor(Color.black);
         g.fillRect(0, 0, getWidth(), getHeight());
@@ -62,7 +63,6 @@ public class Renderer extends JFrame {
         var tris = f.getTris();
 
         for (int i = 0; i < tris.length; i++) {
-            g.setColor(Color.white);
             var t = tris[i];
             Point2D p1 = new Point2D((aspectRatio * F * t.points[0].getX()) / t.points[0].getZ(),
                     (F * t.points[0].getY()) / t.points[0].getZ());
@@ -70,10 +70,9 @@ public class Renderer extends JFrame {
                     (F * t.points[1].getY()) / t.points[1].getZ());
             Point2D p3 = new Point2D((aspectRatio * F * t.points[2].getX()) / t.points[2].getZ(),
                     (F * t.points[2].getY()) / t.points[2].getZ());
+
             Point2D[] col = { p1, p2, p3 };
-            // p1.add(100, 100);
-            // p2.add(100, 100);
-            // p3.add(100, 100);
+
             for (Point2D p : col)
                 p.mul(getWidth() / 2);
 
@@ -81,31 +80,82 @@ public class Renderer extends JFrame {
                 p.add(camera.getX(), camera.getY());
 
             var normal = t.cross();
-            // if (normal.getX() * (t.points[0].getX() - camera.getX()) +
-            // normal.getY() * (t.points[0].getY() - camera.getY()) +
-            // normal.getZ() * (t.points[0].getZ() - camera.getZ()) < 0.0) {
             Point3D rel = new Point3D((t.points[0].getX()),
                     (t.points[0].getY()),
                     (t.points[0].getZ()));
 
-            if (normal.dot(rel) < 0.0) {
-                Point3D light = new Point3D(0, 0, -1);
-                light.mul(1 / light.length());
+            // if (normal.dot(rel) < 0.0) {
+            Point3D light = new Point3D(0, 0, -1);
+            light.mul(1 / light.length());
 
-                g.setColor(Color.getHSBColor(0, 0, (float) light.dot(normal)));
-                g.fillPolygon(Triangle.toPolygon(p1, p2, p3));
-                // g.drawPolygon(Triangle.toPolygon(p1, p2, p3));
-                // g.drawLine(p1.getIntX(), p1.getIntY(), p2.getIntX(), p2.getIntY());
-                // g.drawLine(p2.getIntX(), p2.getIntY(), p3.getIntX(), p3.getIntY());
-                // g.drawLine(p3.getIntX(), p3.getIntY(), p1.getIntX(), p1.getIntY());
+            g.setColor(Color.getHSBColor(0, 0, (float) Math.abs(light.dot(normal))));
 
-            }
+            // g.fillPolygon(Triangle.toPolygon(p1, p2, p3));
+
+            // g.drawPolygon(Triangle.toPolygon(p1, p2, p3));
+
+            drawTriangle(col, g);
+            // g.drawLine(p1.getIntX(), p1.getIntY(), p2.getIntX(), p2.getIntY());
+            // g.drawLine(p2.getIntX(), p2.getIntY(), p3.getIntX(), p3.getIntY());
+            // g.drawLine(p3.getIntX(), p3.getIntY(), p1.getIntX(), p1.getIntY());
+
+            // }
         }
 
         g.dispose();
         getBufferStrategy().show();
         setVisible(true);
+        console.log(System.currentTimeMillis() - time);
+    }
 
+    private void fillBottomFlatTriangle(Point2D v1, Point2D v2, Point2D v3, Graphics2D g) {
+        double invslope1 = (v2.getX() - v1.getX()) / (v2.getY() - v1.getY());
+        double invslope2 = (v3.getX() - v1.getX()) / (v3.getY() - v1.getY());
+
+        double curx1 = v1.getX();
+        double curx2 = v1.getX();
+
+        for (int scanlineY = v1.getIntY(); scanlineY <= v2.getY(); scanlineY++) {
+            g.drawLine((int) curx1, scanlineY, (int) curx2, scanlineY);
+            curx1 += invslope1;
+            curx2 += invslope2;
+        }
+    }
+
+    public void fillTopFlatTriangle(Point2D v1, Point2D v2, Point2D v3, Graphics2D g) {
+        double invslope1 = (v3.getX() - v1.getX()) / (v3.getY() - v1.getY());
+        double invslope2 = (v3.getX() - v2.getX()) / (v3.getY() - v2.getY());
+
+        double curx1 = v3.getX();
+        double curx2 = v3.getX();
+
+        for (int scanlineY = v3.getIntY(); scanlineY > v1.getY(); scanlineY--) {
+            g.drawLine((int) curx1, scanlineY, (int) curx2, scanlineY);
+            curx1 -= invslope1;
+            curx2 -= invslope2;
+        }
+    }
+
+    public void drawTriangle(Point2D[] points, Graphics2D g) {
+        /*
+         * at first sort the three vertices by y-coordinate ascending so v1 is the
+         * topmost vertice
+         */
+        points = Arrays.stream(points).sorted((t1, t2) -> {
+            return (t1.getY() < t2.getY()) ? -1 : (t1.getY() > t2.getY()) ? 1 : 0;
+        }).toArray(Point2D[]::new);
+        /* here we know that v1.y <= v2.y <= v3.y */
+        /* check for trivial case of bottom-flat triangle */
+        {
+            /* general case - split the triangle in a topflat and bottom-flat one */
+            Point2D v4 = new Point2D(
+                    (points[0].getX() + ((points[1].getY() - points[0].getY())
+                            / (points[2].getY() - points[0].getY()))
+                            * (points[2].getX() - points[0].getX())),
+                    points[1].getY());
+            fillBottomFlatTriangle(points[0], points[1], v4, g);
+            fillTopFlatTriangle(points[1], v4, points[2], g);
+        }
     }
 
 }

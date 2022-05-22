@@ -31,14 +31,14 @@ public class ShapeLoader {
     }
 
     public static Triangle[] getShape(String fileName) {
-        ArrayList<Point3D> points = new ArrayList<Point3D>();
+        ArrayList<Point3D> points = new ArrayList<Point3D>(3644);
         ArrayList<Triangle> result = new ArrayList<>();
         try (var f = new FileInputStream(fileName)) {
             // convience crutch
-            byte[] data = f.readAllBytes();
-            Scanner s = new Scanner(new StringReader(new String(data)));
-            s.nextLine();
-            s.nextLine();
+            String data = new String(f.readAllBytes());
+
+            Scanner s = new Scanner(new StringReader(data));
+
             while (s.hasNext()) {
                 switch (s.next()) {
                     case "v":
@@ -53,13 +53,13 @@ public class ShapeLoader {
                 }
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result.stream().toArray(Triangle[]::new);
     }
 
     public static void main(String[] args) {
-        getShape("C:/Users/Joseph/Documents/GitHub/WireFrame/Wireframe/data/VideoShip.obj");
+        getShape("C:/Users/Joseph/Documents/GitHub/WireFrame/Wireframe/data/teapot.obj");
     }
 }

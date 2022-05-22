@@ -22,13 +22,15 @@ public class Main {
                     case 'd':
                         r.camera.add(.2, 0, 0);
                         break;
+                    case KeyEvent.VK_ESCAPE:
+                        System.exit(0);
                 }
             }
 
         });
 
         Frame f = new Frame(
-                ShapeLoader.getShape("C:/Users/Joseph/Documents/GitHub/WireFrame/Wireframe/data/VideoShip.obj"));
+                ShapeLoader.getShape("C:/Users/Joseph/Documents/GitHub/WireFrame/Wireframe/resources/teapot.obj"));
 
         // for (Triangle pi : f.tris) {
         // pi.mul(300);
@@ -40,7 +42,7 @@ public class Main {
         ActionListener game = e -> {
             for (Triangle pi : f.tris) {
                 pi.rotateY(new Point3D(0, 0, 11), 0.007);
-                pi.rotateZ(new Point3D(0, 0, 11), 0.005);
+                pi.rotateX(new Point3D(0, 0, 11), 0.005);
             }
             // for (Triangle pi : f.tris)
             // pi.rotateX(new Point3D(150, 150, 150), 0.020);
