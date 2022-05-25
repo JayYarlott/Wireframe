@@ -24,6 +24,8 @@ public class Main {
                         break;
                     case KeyEvent.VK_ESCAPE:
                         System.exit(0);
+                    case KeyEvent.VK_TAB:
+                        r.pack();
                 }
             }
 
@@ -31,7 +33,7 @@ public class Main {
 
         Frame f = new Frame(
                 ShapeLoader.getShape(
-                        "C:/Users/Joseph/Documents/GitHub/WireFrame/Wireframe/resources/teapot.obj"));
+                        "C:/Users/Joseph/Documents/GitHub/WireFrame/Wireframe/resources/horse.obj"));
 
         // for (Triangle pi : f.tris) {
         // pi.mul(300);
@@ -41,10 +43,10 @@ public class Main {
             pi.translate(new Point3D(-1, -1, 10));
 
         ActionListener game = e -> {
-            for (Triangle pi : f.tris) {
-                pi.rotateY(new Point3D(0, 0, 11), 0.007);
-                pi.rotateX(new Point3D(0, 0, 11), 0.005);
-            }
+            // for (Triangle pi : f.tris) {
+            // pi.rotateY(new Point3D(0, 0, 11), 0.007);
+            // pi.rotateX(new Point3D(0, 0, 11), 0.005);
+            // }
             // for (Triangle pi : f.tris)
             // pi.rotateX(new Point3D(150, 150, 150), 0.020);
             r.render(f);

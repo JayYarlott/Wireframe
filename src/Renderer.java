@@ -13,6 +13,8 @@ public class Renderer extends JFrame {
     double fov = Math.PI / 2; // 90 degrees
     double F = 1 / (Math.tan(fov / 2));
 
+    JPanel rpanel = new JPanel();
+
     public Renderer() {
 
         setDefaultCloseOperation(3);
@@ -22,11 +24,11 @@ public class Renderer extends JFrame {
         setSize(this.getMaximumSize());
         rpanel.setSize(rpanel.getMaximumSize());
         add(rpanel);
-        rpanel.setVisible(true);
+        // rpanel.setVisible(true);
         setVisible(true);
-        setIgnoreRepaint(true);
+        // setIgnoreRepaint(true);
         createBufferStrategy(2);
-        rpanel.repaint();
+        // rpanel.repaint();
         addComponentListener(new ComponentAdapter() {
 
             @Override
@@ -43,11 +45,11 @@ public class Renderer extends JFrame {
         this.camera = camera;
     }
 
-    JPanel rpanel = new JPanel();
-
     double dcpx = 0, dcpy = 0;
+    Point3D light = new Point3D(0, 0, -1);
 
     public void render(Frame f) {
+        light.rotateY(f.center, 0.01);
         long time = System.currentTimeMillis();
         var g = (Graphics2D) getBufferStrategy().getDrawGraphics();
         g.setColor(Color.black);
@@ -85,16 +87,16 @@ public class Renderer extends JFrame {
                     (t.points[0].getZ()));
 
             // if (normal.dot(rel) < 0.0) {
-            Point3D light = new Point3D(0, 0, -1);
+
             light.mul(1 / light.length());
 
             g.setColor(Color.getHSBColor(0, 0, (float) Math.abs(light.dot(normal))));
 
-            // g.fillPolygon(Triangle.toPolygon(p1, p2, p3));
+            g.fillPolygon(Triangle.toPolygon(p1, p2, p3));
 
             // g.drawPolygon(Triangle.toPolygon(p1, p2, p3));
 
-            drawTriangle(col, g);
+            // drawTriangle(col, g);
             // g.drawLine(p1.getIntX(), p1.getIntY(), p2.getIntX(), p2.getIntY());
             // g.drawLine(p2.getIntX(), p2.getIntY(), p3.getIntX(), p3.getIntY());
             // g.drawLine(p3.getIntX(), p3.getIntY(), p1.getIntX(), p1.getIntY());

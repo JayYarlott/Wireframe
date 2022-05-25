@@ -4,9 +4,17 @@ import java.util.Arrays;
 
 public class Frame {
     Triangle[] tris;
+    Point3D center = new Point3D();
 
     public Frame(Triangle[] wires) {
         this.tris = wires;
+        long num = 0;
+        for (Triangle pi : tris)
+            for (Point3D point : pi.points) {
+                center.add(point);
+                num++;
+            }
+        center.mul((double) 1 / num);
     }
 
     public Triangle[] getTris() {
